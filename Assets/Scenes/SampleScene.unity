@@ -366,7 +366,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   floor: {fileID: 2064452482}
   circle: {fileID: 1336397945}
-  rotationSensitivity: 125
+  rotationSensitivity: 50
   initialFloorScale: {x: 10, y: 2}
   shrinkRate: 0.15
   minFloorWidth: 1.5

@@ -4,10 +4,15 @@ using System.Linq;
 using System;
 using CoreOSC.IO;
 
+
+
 public class OscServer : MonoBehaviour
 {
     private UdpClient udpClient;
+    private float gyroX;
+    private float gyroY;
     private float gyroZ;
+
     private float[] highScores = new float[3];
 
     [Header("References")]
@@ -33,6 +38,12 @@ public class OscServer : MonoBehaviour
     private float gameTime;
     private Vector3 circleStartPos;
 
+    // Add these fields after existing variables
+    private bool isPaused = false;
+    private string gyroDataDisplay = "";
+    private GUIStyle pauseStyle;
+
+
     void Start()
     {
         udpClient = new UdpClient(57100);
@@ -51,7 +62,7 @@ public class OscServer : MonoBehaviour
         // Initialize styles if not set
         {
             timerStyle = new GUIStyle();
-            timerStyle.fontSize = 36;
+            timerStyle.fontSize = 80;
             timerStyle.fontStyle = FontStyle.Bold;
             timerStyle.normal.textColor = new Color(1f, 1f, 1f, 1f); // Pure white
         }
@@ -59,11 +70,25 @@ public class OscServer : MonoBehaviour
         if (highScoreStyle == null)
         {
             highScoreStyle = new GUIStyle();
-            highScoreStyle.fontSize = 24;
+            highScoreStyle.fontSize = 80;
             highScoreStyle.fontStyle = FontStyle.Bold;
             highScoreStyle.normal.textColor = new Color(1f, 1f, 1f, 1f); // Pure white
         }
+
+        pauseStyle = new GUIStyle();
+        pauseStyle.fontSize = 40;
+        pauseStyle.normal.textColor = Color.white;
+        pauseStyle.alignment = TextAnchor.MiddleCenter;
     }
+
+    void TogglePause()
+    {
+        isPaused = !isPaused;
+        Time.timeScale = isPaused ? 0 : 1;
+    }
+
+
+
 
     void LoadHighScores()
     {
@@ -101,16 +126,33 @@ public class OscServer : MonoBehaviour
             while (!receiveTask.IsCompleted) yield return null;
             var response = receiveTask.Result;
 
+
+
+
+
+
             if (response.Address.Value == "/zigsim/gyro")
             {
                 var args = response.Arguments.ToArray();
+                gyroX = Convert.ToSingle(args[0]);
+                gyroY = Convert.ToSingle(args[1]);
                 gyroZ = Convert.ToSingle(args[2]);
+
+
+                gyroDataDisplay = $"X: {gyroX:F2}\nY: {gyroY:F2}\nZ: {gyroZ:F2}";
+
             }
         }
     }
 
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            isPaused = !isPaused;
+            Time.timeScale = isPaused ? 0 : 1;
+        }
+
         HandleFloorRotation();
         ShrinkFloor();
         CheckCirclePosition();
@@ -188,6 +230,19 @@ public class OscServer : MonoBehaviour
                 GUI.Label(new Rect(20, 85 + (i * 20), 200, 30),
                     $"{i + 1}. {highScores[i]:F2}", highScoreStyle);
             }
+        }
+
+        if (isPaused)
+        {
+            // Create semi-transparent background
+            GUI.color = new Color(0, 0, 0, 0.7f);
+            GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), Texture2D.whiteTexture);
+            GUI.color = Color.white;
+
+            // Display pause menu
+            float centerY = Screen.height / 2;
+            GUI.Label(new Rect(0, centerY - 100, Screen.width, 50), "PAUSED", pauseStyle);
+            GUI.Label(new Rect(0, centerY, Screen.width, 50), $"Gyro Data:\n{gyroDataDisplay}", pauseStyle);
         }
     }
 }
