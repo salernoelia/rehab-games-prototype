@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>CoreOSC</id>
+    <version>1.0.0</version>
+    <title>CoreOSC</title>
+    <authors>dastevens</authors>
+    <owners>dastevens</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <projectUrl>https://github.com/dastevens/CoreOSC</projectUrl>
+    <description>CoreOSC - OSC Library for .NET Standard 2.0</description>
+    <summary>CoreOSC - OSC Library for .NET Standard 2.0</summary>
+    <repository type="git" url="https://github.com/dastevens/CoreOSC/CoreOSC.git" />
+    <dependencies />
+  </metadata>
+</package>
