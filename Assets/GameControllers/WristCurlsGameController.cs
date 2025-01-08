@@ -12,9 +12,15 @@ public class WristCurlsGameController : MonoBehaviour
 
     public float CurrentGameTime => gameTime;  // Expose current game time
 
+    private bool gameStarted = false;
+
     void Start()
     {
+        PauseManager.Instance?.ForceUnpause();
+        gameStarted = true;
+        gameTime = 0f;
         LoadHighScores();
+        timerStyle = null;
 
         // Initialize UI styles if not assigned
         if (timerStyle == null)
@@ -39,16 +45,19 @@ public class WristCurlsGameController : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            PauseManager.Instance.TogglePause();
-        }
 
-        // Increment timer only when not paused
-        if (!PauseManager.Instance.IsPaused)
+        // Remove duplicate time increment, only use one condition
+        if (gameStarted && !PauseManager.Instance.IsPaused)
         {
             gameTime += Time.deltaTime;
         }
+    }
+
+    private void OnDisable()
+    {
+        // Reset game state when leaving scene
+        gameTime = 0f;
+        gameStarted = false;
     }
 
     void OnGUI()
@@ -100,5 +109,15 @@ public class WristCurlsGameController : MonoBehaviour
         {
             Destroy(spike);
         }
+
+        // Restart game timer
+        gameStarted = true;
+    }
+
+    public void OnDestroy()
+    {
+        SaveHighScore(gameTime);
+        gameTime = 0f;
+        gameStarted = false;
     }
 }

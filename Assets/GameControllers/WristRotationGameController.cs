@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using UnityEngine.SceneManagement;
 
 public class WristRotationGameController : MonoBehaviour
 {
@@ -29,6 +30,8 @@ public class WristRotationGameController : MonoBehaviour
 
     void Start()
     {
+        Time.timeScale = 1; // Ensure game runs after returning
+        gameTime = 0f;
         currentFloorScale = initialFloorScale;
         floor.localScale = new Vector3(currentFloorScale.x, currentFloorScale.y, 1);
 
@@ -58,18 +61,17 @@ public class WristRotationGameController : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            PauseManager.Instance.TogglePause();
-        }
+        if (PauseManager.Instance != null && PauseManager.Instance.IsPaused)
+            return;
+        if (SceneManager.GetActiveScene().name == "MainMenu")
+            return;
 
-        // Only run game logic when not paused
-        if (!PauseManager.Instance.IsPaused)
-        {
-            HandleFloorRotation();
-            ShrinkFloor();
-            CheckCirclePosition();
-        }
+        if (floor == null) return;
+
+        HandleFloorRotation();
+        ShrinkFloor();
+        CheckCirclePosition();
+
     }
 
     void LoadHighScores()
@@ -116,10 +118,18 @@ public class WristRotationGameController : MonoBehaviour
 
     void ShrinkFloor()
     {
+        if (floor == null) // Safety check
+            return;
+
         gameTime += Time.deltaTime;
         float newWidth = Mathf.Max(minFloorWidth, initialFloorScale.x - (gameTime * shrinkRate));
         currentFloorScale = new Vector2(newWidth, initialFloorScale.y);
         floor.localScale = new Vector3(currentFloorScale.x, currentFloorScale.y, 1);
+    }
+
+    void OnDestroy()
+    {
+        timerStyle = null;
     }
 
     void CheckCirclePosition()
@@ -149,8 +159,30 @@ public class WristRotationGameController : MonoBehaviour
         }
     }
 
+    public void ResetGameTime()
+    {
+        gameTime = 0f;
+        currentFloorScale = initialFloorScale;
+        if (floor != null)
+        {
+            floor.localScale = new Vector3(currentFloorScale.x, currentFloorScale.y, 1);
+            floor.rotation = Quaternion.identity;
+        }
+        if (circle != null)
+        {
+            circle.position = circleStartPos;
+            var rb = circle.GetComponent<Rigidbody2D>();
+            if (rb != null)
+            {
+                rb.linearVelocity = Vector2.zero;
+                rb.angularVelocity = 0f;
+            }
+        }
+    }
+
     void OnGUI()
     {
+        if (SceneManager.GetActiveScene().name == "MainMenu") return;
         GUI.color = Color.white;
         GUI.Label(new Rect(20, 15, 200, 40), $"Time: {gameTime:F2}", timerStyle);
         GUI.Label(new Rect(20, 60, 200, 30), "High Scores:", highScoreStyle);

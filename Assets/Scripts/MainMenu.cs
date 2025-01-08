@@ -1,3 +1,5 @@
+// MainMenu.cs
+
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -8,7 +10,14 @@ public class MainMenu : MonoBehaviour
     private string[] scenes = new string[] { "WristRotation", "WristCurls" };
 
     private void Start()
+
     {
+        Time.timeScale = 1;
+        if (PauseManager.Instance != null)
+        {
+            PauseManager.Instance.ForceUnpause();
+        }
+
         menuStyle = new GUIStyle();
         menuStyle.fontSize = 40;
         menuStyle.normal.textColor = Color.white;
@@ -37,6 +46,8 @@ public class MainMenu : MonoBehaviour
             }
         }
     }
+
+
 }
 
 
