@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class WristCurlsPlayerController : MonoBehaviour
@@ -8,7 +9,6 @@ public class WristCurlsPlayerController : MonoBehaviour
     private bool isGrounded = true;
     private float jumpCooldown = 0.2f;
     private float lastJumpTime = -10f;
-
     public WristCurlsGameController gameController;
     private Vector3 initialPosition;
 
@@ -23,18 +23,34 @@ public class WristCurlsPlayerController : MonoBehaviour
         if (PauseManager.Instance != null && PauseManager.Instance.IsPaused) return;
         if (OscReceiver.Instance == null) return;
 
-        float accelY = OscReceiver.Instance.accelY;
+        float gyroZ = OscReceiver.Instance.gyroZ;
 
         if (isGrounded && Time.time - lastJumpTime > jumpCooldown)
         {
-
-            if (Mathf.Abs(accelY) > 0.3f)
+            if (Mathf.Abs(gyroZ) > 0.4f)
             {
                 rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
                 isGrounded = false;
                 lastJumpTime = Time.time;
+                StartCoroutine(RotateSprite(-90f, 0.6f));
             }
         }
+    }
+
+    IEnumerator RotateSprite(float angle, float duration)
+    {
+        float startAngle = transform.eulerAngles.z;
+        float endAngle = startAngle + angle;
+        float time = 0f;
+        while (time < duration)
+        {
+            time += Time.deltaTime;
+            float t = time / duration;
+            float currentAngle = Mathf.Lerp(startAngle, endAngle, t);
+            transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, currentAngle);
+            yield return null;
+        }
+        transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, endAngle);
     }
 
     void OnCollisionEnter2D(Collision2D collision)
