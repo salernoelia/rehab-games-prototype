@@ -7,7 +7,6 @@ public class PauseOverlay : MonoBehaviour
 
     private void Start()
     {
-        DontDestroyOnLoad(gameObject);
         if (SceneManager.GetActiveScene().name == "MainMenu")
         {
             Destroy(gameObject);
@@ -51,7 +50,7 @@ public class PauseOverlay : MonoBehaviour
     {
         if (PauseManager.Instance != null && PauseManager.Instance.IsPaused && Input.GetKeyDown(KeyCode.M))
         {
-            PauseManager.Instance.ForceUnpause(); // Ensure unpaused before scene change
+            PauseManager.Instance.ForceUnpause();
             SceneManager.LoadScene("MainMenu");
         }
     }

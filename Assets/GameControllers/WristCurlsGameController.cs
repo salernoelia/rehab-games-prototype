@@ -10,7 +10,7 @@ public class WristCurlsGameController : MonoBehaviour
     public GUIStyle timerStyle;
     public GUIStyle highScoreStyle;
 
-    public float CurrentGameTime => gameTime;  // Expose current game time
+    public float CurrentGameTime => gameTime;
 
     private bool gameStarted = false;
 
@@ -22,7 +22,7 @@ public class WristCurlsGameController : MonoBehaviour
         LoadHighScores();
         timerStyle = null;
 
-        // Initialize UI styles if not assigned
+
         if (timerStyle == null)
         {
             timerStyle = new GUIStyle
@@ -46,7 +46,7 @@ public class WristCurlsGameController : MonoBehaviour
     void Update()
     {
 
-        // Remove duplicate time increment, only use one condition
+
         if (gameStarted && !PauseManager.Instance.IsPaused)
         {
             gameTime += Time.deltaTime;
@@ -55,7 +55,7 @@ public class WristCurlsGameController : MonoBehaviour
 
     private void OnDisable()
     {
-        // Reset game state when leaving scene
+
         gameTime = 0f;
         gameStarted = false;
     }
@@ -104,13 +104,11 @@ public class WristCurlsGameController : MonoBehaviour
     {
         SaveHighScore(gameTime);
         gameTime = 0f;
-        // Despawn all spikes when the player dies
         foreach (GameObject spike in GameObject.FindGameObjectsWithTag("Spike"))
         {
             Destroy(spike);
         }
 
-        // Restart game timer
         gameStarted = true;
     }
 

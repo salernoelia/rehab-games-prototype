@@ -30,7 +30,7 @@ public class WristRotationGameController : MonoBehaviour
 
     void Start()
     {
-        Time.timeScale = 1; // Ensure game runs after returning
+        Time.timeScale = 1;
         gameTime = 0f;
         currentFloorScale = initialFloorScale;
         floor.localScale = new Vector3(currentFloorScale.x, currentFloorScale.y, 1);
@@ -118,7 +118,7 @@ public class WristRotationGameController : MonoBehaviour
 
     void ShrinkFloor()
     {
-        if (floor == null) // Safety check
+        if (floor == null)
             return;
 
         gameTime += Time.deltaTime;

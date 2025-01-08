@@ -12,7 +12,6 @@ public class PauseManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            // Removed: DontDestroyOnLoad(gameObject);
         }
         else
         {
@@ -35,7 +34,7 @@ public class PauseManager : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        ForceUnpause(); // Always unpause when a new scene is loaded
+        ForceUnpause();
         if (scene.name == "MainMenu")
         {
             if (currentOverlay != null)
@@ -48,10 +47,9 @@ public class PauseManager : MonoBehaviour
         {
             GameObject overlayObj = new GameObject("PauseOverlay");
             currentOverlay = overlayObj.AddComponent<PauseOverlay>();
-            // Removed: DontDestroyOnLoad(overlayObj);
         }
 
-        // Reset timer in potential game controllers
+
         FindObjectOfType<WristRotationGameController>()?.ResetGameTime();
     }
 
@@ -64,7 +62,7 @@ public class PauseManager : MonoBehaviour
 
             if (!IsPaused)
             {
-                // Ensure game resumes properly
+
                 Instance.ForceUnpause();
             }
         }

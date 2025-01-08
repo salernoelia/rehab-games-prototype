@@ -23,12 +23,11 @@ public class WristCurlsPlayerController : MonoBehaviour
         if (PauseManager.Instance != null && PauseManager.Instance.IsPaused) return;
         if (OscReceiver.Instance == null) return;
 
-        // Use accelerometer Y-axis to trigger a jump
         float accelY = OscReceiver.Instance.accelY;
 
         if (isGrounded && Time.time - lastJumpTime > jumpCooldown)
         {
-            // Lower threshold for increased sensitivity
+
             if (Mathf.Abs(accelY) > 0.3f)
             {
                 rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);

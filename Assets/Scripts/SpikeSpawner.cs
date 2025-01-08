@@ -5,10 +5,10 @@ public class SpikeSpawner : MonoBehaviour
     public GameObject spikePrefab;
 
     [Header("Spawn Timing")]
-    public float initialSpawnInterval = 0.7f;      // Reduced for quicker first spikes
+    public float initialSpawnInterval = 0.7f;
     public float spawnIntervalMin = 0.3f;
     public float spawnIntervalDecreaseRate = 0.015f;
-    public float multiSpikeTimeThreshold = 60f;    // Time after which double/triple spikes can appear
+    public float multiSpikeTimeThreshold = 60f;
 
     [Header("Spike Movement")]
     public float initialSpikeSpeed = 7f;
