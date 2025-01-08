@@ -71,7 +71,6 @@ public class WristRotationGameController : MonoBehaviour
         HandleFloorRotation();
         ShrinkFloor();
         CheckCirclePosition();
-
     }
 
     void LoadHighScores()
@@ -125,11 +124,6 @@ public class WristRotationGameController : MonoBehaviour
         float newWidth = Mathf.Max(minFloorWidth, initialFloorScale.x - (gameTime * shrinkRate));
         currentFloorScale = new Vector2(newWidth, initialFloorScale.y);
         floor.localScale = new Vector3(currentFloorScale.x, currentFloorScale.y, 1);
-    }
-
-    void OnDestroy()
-    {
-        timerStyle = null;
     }
 
     void CheckCirclePosition()
@@ -193,5 +187,17 @@ public class WristRotationGameController : MonoBehaviour
                 GUI.Label(new Rect(20, 85 + (i * 20), 200, 30), $"{i + 1}. {highScores[i]:F2}", highScoreStyle);
             }
         }
+    }
+
+    void OnDestroy()
+    {
+        Time.timeScale = 1;
+        timerStyle = null;
+        highScoreStyle = null;
+    }
+
+    void OnApplicationQuit()
+    {
+        PlayerPrefs.Save();
     }
 }
